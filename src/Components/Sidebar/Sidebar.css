@@ -1,0 +1,28 @@
+.logo {
+    margin-bottom: 4rem;
+}
+
+.dashboard-entry {
+    font-weight: 100;
+    font-size: 1.08rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; 
+    padding: 0.4rem 1.2rem; 
+}
+
+.dashboard-icon {
+    font-size: 1.8rem;
+    margin-right: 0.5rem; 
+}
+
+.dashboard-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.proper-padding-dasboard{
+    padding-left: 2rem !important;
+    padding-right: 2.8rem !important;
+}

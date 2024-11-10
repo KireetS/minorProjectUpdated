@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=ABeeZee:ital@0;1&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+
+:root{
+  --primary-color: #212529;
+  --secondary-color: #272B2F;
+}
+
+body{
+  font-family: "ABeeZee";
+}
+
+.vscrollbar::-webkit-scrollbar{
+  width: 0.4rem;
+  height: 0.4rem;
+}
+.vscrollbar::-webkit-scrollbar-track{
+  background-color: transparent;
+  margin-block: 1rem;
+
+
+}
+.vscrollbar::-webkit-scrollbar-thumb{
+  border-radius: 9999px;
+  background: #fff;
+}
