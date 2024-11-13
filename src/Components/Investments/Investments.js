@@ -9,9 +9,11 @@ import {
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
 import { formatDate } from "../../Utils/Helper";
 import EditInvestment from "./EditInvestment"; // Import your EditInvestment component
+import AddInvestmentTypes from "./AddInvestmentTypes";
 
 const Investments = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTModalOpen, setIsTModalOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedInvestmentId, setSelectedInvestmentId] = useState(null);
   const { success, failure } = useContext(ToastifyContext);
@@ -71,6 +73,14 @@ const Investments = () => {
       <div className="w-full flex items-center justify-end space-x-4 py-3 px-0">
         <button
           onClick={() => {
+            setIsTModalOpen(true);
+          }}
+          className="bg-yellow-500 text-white font-bold rounded-lg py-2 px-3"
+        >
+          Add Investment Type
+        </button>
+        <button
+          onClick={() => {
             setIsModalOpen(true);
           }}
           className="bg-blue-500 text-white font-bold rounded-lg py-2 px-3"
@@ -124,6 +134,10 @@ const Investments = () => {
       <AddInvestment
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+      <AddInvestmentTypes
+        isOpen={isTModalOpen}
+        onClose={() => setIsTModalOpen(false)}
       />
       <EditInvestment
         isOpen={isEditOpen}

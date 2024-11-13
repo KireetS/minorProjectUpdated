@@ -7,6 +7,7 @@ import {
   deleteExpense,
   getCategories,
   getExpenses,
+  getExpensesYear,
 } from "../../api/Finances/Expenses";
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
 import { formatDate } from "../../Utils/Helper";
@@ -22,6 +23,7 @@ const Expenses = () => {
   const { success, failure } = useContext(ToastifyContext);
   const years = Array.from({ length: 31 }, (_, i) => (2010 + i).toString());
   const months = [
+    "All",
     "January",
     "February",
     "March",
@@ -49,11 +51,16 @@ const Expenses = () => {
 
   const fetchExpenses = async () => {
     try {
-      const resp = await getExpenses(
-        months.indexOf(selectedMonth) + 1,
-        selectedYear,
-        selectedCategory
-      );
+      let resp;
+      if (selectedMonth == "All") {
+        resp = await getExpensesYear(selectedYear, selectedCategory);
+      } else {
+        resp = await getExpenses(
+          months.indexOf(selectedMonth),
+          selectedYear,
+          selectedCategory
+        );
+      }
       const x = await getCategories();
       setCategories(x.data);
       setExpenses(resp);

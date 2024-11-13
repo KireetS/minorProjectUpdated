@@ -1,7 +1,7 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AuthPage from "./Components/Auth/AuthPage";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import Expenses from "./Components/Expenses/Expenses";
@@ -9,9 +9,10 @@ import Goals from "./Components/Goals/Goals";
 import Investments from "./Components/Investments/Investments";
 import SipCalculator from "./Components/sip/SipCalculator";
 import Dashboard from "./Components/Dashboard/Dashboard";
+import LoginContext from "./Contexts/loginContext/LoginContext";
 
 export default function App() {
-  const [login, setLogin] = useState(false);
+  const { login, setLogin } = useContext(LoginContext);
   const navigate = useNavigate();
 
   useEffect(() => {

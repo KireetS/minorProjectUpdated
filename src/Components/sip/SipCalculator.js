@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
-  CartesianGrid,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 const SipCalculator = () => {
@@ -18,25 +17,27 @@ const SipCalculator = () => {
 
   const calculateSIP = () => {
     const totalMonths = investmentDuration * 12;
-    const sipData = [];
     let totalInvestment = oneTimeInvestment;
+    let totalReturnAmount = 0;
 
     for (let month = 1; month <= totalMonths; month++) {
       totalInvestment += monthlyInvestment;
       const returnAmount =
         totalInvestment * Math.pow(1 + expectedReturnRate / 100 / 12, month);
-      sipData.push({
-        month,
-        totalInvestment: parseFloat(totalInvestment.toFixed(2)),
-        returnAmount: parseFloat(returnAmount.toFixed(2)),
-      });
+      totalReturnAmount = returnAmount; // Final value after all months
     }
 
-    setData(sipData);
+    // Pie chart data
+    const chartData = [
+      { name: "Total Investment", value: totalInvestment },
+      { name: "Expected Return", value: totalReturnAmount - totalInvestment },
+    ];
+
+    setData(chartData);
   };
 
   const handleCalculate = (e) => {
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault();
     calculateSIP();
   };
 
@@ -122,48 +123,31 @@ const SipCalculator = () => {
           </div>
         </form>
 
-        {data.length > 0 && (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" />
-              <XAxis
-                dataKey="month"
-                label={{ value: "Months", position: "bottom", fill: "#ffffff" }}
-                stroke="#ffffff"
-              />
-              <YAxis
-                label={{
-                  value: "Amount ($)",
-                  angle: -90,
-                  position: "insideLeft",
-                  fill: "#ffffff",
-                }}
-                stroke="#ffffff"
-              />
-              <Tooltip
-                contentStyle={{ backgroundColor: "#4B5563", border: "none" }}
-              />
-              <Line
-                type="monotone"
-                dataKey="totalInvestment"
-                stroke="#1c64f2" // Blue color
-                name="Total Investment"
-                strokeWidth={2}
-                animationDuration={500}
-                dot={{ stroke: "#1c64f2", strokeWidth: 2 }}
-              />
-              <Line
-                type="monotone"
-                dataKey="returnAmount"
-                stroke="#4caf50" // Green color
-                name="Expected Return"
-                strokeWidth={2}
-                animationDuration={500}
-                dot={{ stroke: "#4caf50", strokeWidth: 2 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
+        <div className="p-4 w-full">
+          {data.length > 0 && (
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Legend iconSize={10} iconType="circle" />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#4B5563", border: "none" }}
+                />
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  label
+                >
+                  <Cell key="investment" fill="#1c64f2" />
+                  <Cell key="return" fill="#4caf50" />
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
     </div>
   );

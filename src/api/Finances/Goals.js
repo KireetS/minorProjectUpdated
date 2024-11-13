@@ -4,14 +4,14 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_BURL + "/api/goals"; // Assuming you have the base URL in your .env file
 
 // Function to get authToken from local storage
-const getAuthToken = () => localStorage.getItem("authToken");
+const getAuthToken = () => localStorage.getItem("auth-token");
 
 // Create a new goal
 export const createGoal = async (goalData) => {
   try {
     const response = await axios.post(API_URL, goalData, {
       headers: {
-        "authToken": getAuthToken(), // Include the auth token in the headers
+        "auth-token": getAuthToken(), // Include the auth token in the headers
       },
     });
     return response.data; // Return the created goal data
@@ -26,7 +26,7 @@ export const getGoals = async () => {
   try {
     const response = await axios.get(API_URL, {
       headers: {
-        "authToken": getAuthToken(), // Include the auth token in the headers
+        "auth-token": getAuthToken(), // Include the auth token in the headers
       },
     });
     return response.data; // Return the list of goals
@@ -41,7 +41,7 @@ export const getGoalById = async (goalId) => {
   try {
     const response = await axios.get(`${API_URL}/${goalId}`, {
       headers: {
-        "authToken": getAuthToken(), // Include the auth token in the headers
+        "auth-token": getAuthToken(), // Include the auth token in the headers
       },
     });
     return response.data; // Return the goal data
@@ -56,7 +56,7 @@ export const updateGoal = async (goalId, goalData) => {
   try {
     const response = await axios.put(`${API_URL}/${goalId}`, goalData, {
       headers: {
-        "authToken": getAuthToken(), // Include the auth token in the headers
+        "auth-token": getAuthToken(), // Include the auth token in the headers
       },
     });
     return response.data; // Return the updated goal data
@@ -71,7 +71,7 @@ export const deleteGoal = async (goalId) => {
   try {
     const response = await axios.delete(`${API_URL}/${goalId}`, {
       headers: {
-        "authToken": getAuthToken(), // Include the auth token in the headers
+        "auth-token": getAuthToken(), // Include the auth token in the headers
       },
     });
     return response.data; // Return the success message

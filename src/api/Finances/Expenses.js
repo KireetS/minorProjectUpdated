@@ -8,7 +8,7 @@ export const addExpense = async (expenseData) => {
     const response = await axios.post(`${url}/api/expenses`, expenseData, {
       headers: {
         "Content-Type": "application/json",
-        "authToken": `${localStorage.getItem("authToken")}`, // Assuming you store the token in local storage
+        "auth-token": `${localStorage.getItem("auth-token")}`, // Assuming you store the token in local storage
       },
     });
     return response.data;
@@ -24,7 +24,21 @@ export const getExpenses = async (month, year, category) => {
     const response = await axios.get(`${url}/api/expenses`, {
       params: { month, year, category },
       headers: {
-        "authToken": localStorage.getItem("authToken"), // Assumes the token is in local storage
+        "auth-token": localStorage.getItem("auth-token"), // Assumes the token is in local storage
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching expenses:", error);
+    throw error;
+  }
+};
+export const getExpensesYear = async (year, category) => {
+  try {
+    const response = await axios.get(`${url}/api/expenses`, {
+      params: { year, category },
+      headers: {
+        "auth-token": localStorage.getItem("auth-token"), // Assumes the token is in local storage
       },
     });
     return response.data;
@@ -37,7 +51,7 @@ export const getExpensewithID = async (id) => {
   try {
     const response = await axios.get(`${url}/api/expenses/${id}`, {
       headers: {
-        "authToken": localStorage.getItem("authToken"), // Assumes the token is in local storage
+        "auth-token": localStorage.getItem("auth-token"), // Assumes the token is in local storage
       },
     });
     return response.data;
@@ -53,7 +67,7 @@ export const updateExpense = async (id, expenseData) => {
     const response = await axios.put(`${url}/api/expenses/${id}`, expenseData, {
       headers: {
         "Content-Type": "application/json",
-        "authToken": `${localStorage.getItem("authToken")}`, // Assuming you store the token in local storage
+        "auth-token": `${localStorage.getItem("auth-token")}`, // Assuming you store the token in local storage
       },
     });
     return response.data;
@@ -68,7 +82,7 @@ export const deleteExpense = async (id) => {
   try {
     const response = await axios.delete(`${url}/api/expenses/${id}`, {
       headers: {
-        "authToken": `${localStorage.getItem("authToken")}`, // Assuming you store the token in local storage
+        "auth-token": `${localStorage.getItem("auth-token")}`, // Assuming you store the token in local storage
       },
     });
     return response.data;
@@ -80,10 +94,22 @@ export const deleteExpense = async (id) => {
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:5000/api", // Adjust your base URL accordingly
-  headers: {
-    "authToken": localStorage.getItem("authToken"), // Or however you manage your token
-  },
 });
+
+// Add a request interceptor to dynamically attach the token
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("auth-token"); // Get token dynamically from localStorage
+    if (token) {
+      config.headers["auth-token"] = token; // Attach token to request headers
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export const createCategory = async (name) => {
   try {
     const response = await axiosInstance.post("/expenses/category", { name });

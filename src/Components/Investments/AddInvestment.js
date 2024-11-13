@@ -1,15 +1,34 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { createInvestment } from "../../api/Finances/Investments"; // Ensure you have an API call to create an investment
+
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
+import { getUser } from "../../api/Auth/AuthAPI";
 
 const AddInvestment = ({ isOpen, onClose }) => {
   const { success, failure } = useContext(ToastifyContext);
   const [investmentDetails, setInvestmentDetails] = useState({
     amount: "",
-    date: "", // Date of investment
+    date: "",
     investmentType: "", // Type of investment
     description: "", // Optional description
   });
+  const [investmentTypes, setInvestmentTypes] = useState([]);
+
+  // Fetch investment types when the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      const fetchTypes = async () => {
+        try {
+          const types = await getUser(); // Assuming this fetches the available investment types from the API
+
+          setInvestmentTypes(types.investmentTypes);
+        } catch (err) {
+          failure(`Error fetching investment types: ${err.message}`);
+        }
+      };
+      fetchTypes();
+    }
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,14 +85,20 @@ const AddInvestment = ({ isOpen, onClose }) => {
           </div>
           <div className="mb-4">
             <label className="text-white block mb-2">Investment Type</label>
-            <input
-              type="text"
-              name="investmentType" // Type of investment
+            <select
+              name="investmentType"
               value={investmentDetails.investmentType}
               onChange={handleChange}
               className="w-full p-2 rounded bg-primary-color text-white border-none focus:ring-2 focus:ring-yellow-500"
               required
-            />
+            >
+              <option value="">Select an Investment Type</option>
+              {investmentTypes.map((type) => (
+                <option key={type.name} value={type.name}>
+                  {type.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="mb-4">
             <label className="text-white block mb-2">Description</label>
