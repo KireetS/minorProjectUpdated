@@ -93,7 +93,7 @@ export const deleteExpense = async (id) => {
 };
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api", // Adjust your base URL accordingly
+  baseURL: `${process.env.REACT_APP_BURL}/api`, // Adjust your base URL accordingly
 });
 
 // Add a request interceptor to dynamically attach the token
