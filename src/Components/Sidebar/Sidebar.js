@@ -7,6 +7,9 @@ import { FaChartLine } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 import LoginContext from "./../../Contexts/loginContext/LoginContext";
+import { CgInsights } from "react-icons/cg";
+import { MdMenuBook } from "react-icons/md";
+import { PiSignOutBold } from "react-icons/pi";
 
 const Sidebar = () => {
   const [visible, setVisible] = useState(false);
@@ -44,11 +47,11 @@ const Sidebar = () => {
           <span className="dashboard-text">SIP calculator</span>
         </Link>
         <Link to={"/suggestions"} className="flex space-x-3 dashboard-entry">
-          <BiCoinStack className="dashboard-icon" />
-          <span className="dashboard-text">Suggestions</span>
+          <CgInsights className="dashboard-icon" />
+          <span className="dashboard-text">Insight</span>
         </Link>
         <Link to={"/learning"} className="flex space-x-3 dashboard-entry">
-          <BiCoinStack className="dashboard-icon" />
+          <MdMenuBook className="dashboard-icon" />
           <span className="dashboard-text">Learning</span>
         </Link>
         <div
@@ -59,7 +62,7 @@ const Sidebar = () => {
           }}
           className="flex space-x-3 dashboard-entry cursor-pointer"
         >
-          <BiCoinStack className="dashboard-icon" />
+          <PiSignOutBold className="dashboard-icon" />
           <span className="dashboard-text">Sign Out</span>
         </div>
       </div>

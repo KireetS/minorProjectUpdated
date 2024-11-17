@@ -24,7 +24,18 @@ const Investments = () => {
   const [investmentData, setInvestmentData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [total, setTotal] = useState("");
+  const [total, setTotal] = useState({});
+  const getTotal = () => {
+    let totalAmount = 0;
+    let totalReturn = 0;
+    investments.forEach((element) => {
+      totalAmount += Number(element.amount);
+      totalReturn += Number(element.expAmount);
+    });
+    totalAmount = totalAmount.toFixed(2);
+    totalReturn = totalReturn.toFixed(2);
+    setTotal({ totalAmount, totalReturn });
+  };
   const fetchInvestments = async () => {
     try {
       const resp = await getInvestments(); // Fetch investments from your API
@@ -36,7 +47,7 @@ const Investments = () => {
   const fetchTotalInvestments = async () => {
     try {
       const resp = await getTotalInvestments(); // Fetch investments from your API
-      setTotal(resp);
+
       console.log("this is total", resp);
     } catch (e) {
       failure("Failed to load investments");
@@ -68,6 +79,10 @@ const Investments = () => {
     fetchTotalInvestments();
     fetchInvestmentsbyCategory();
   }, [isModalOpen, isEditOpen]);
+  useEffect(() => {
+    getTotal();
+    console.log(total);
+  }, [investments]);
 
   const deleteInvestmentHandler = async (investmentId) => {
     // Optimistically remove the investment from the local state
@@ -147,6 +162,11 @@ const Investments = () => {
             <Tooltip />
           </PieChart>
         </ResponsiveContainer>
+      </div>
+
+      <div className="w-full flex items-center justify-end space-x-4 text-white text-lg  py-3 px-0">
+        Total Amount Invested : ${total.totalAmount} <br />
+        Total Expected Returns : ${total.totalReturn}
       </div>
 
       <div className="mt-6 overflow-x-scroll rounded-lg shadow-md max-w-full vscrollbar lg:overflow-hidden">
