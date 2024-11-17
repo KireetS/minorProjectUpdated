@@ -5,22 +5,26 @@ import AddInvestment from "./AddInvestment"; // Import your AddInvestment compon
 import {
   deleteInvestment,
   getInvestments,
+  getTotalInvestments,
 } from "../../api/Finances/Investments"; // Replace with your actual API file for investments
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
 import { formatDate } from "../../Utils/Helper";
 import EditInvestment from "./EditInvestment"; // Import your EditInvestment component
 import AddInvestmentTypes from "./AddInvestmentTypes";
-
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { getUser } from "../../api/Auth/AuthAPI";
 const Investments = () => {
+  const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7f50", "#8dd1e1"];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTModalOpen, setIsTModalOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedInvestmentId, setSelectedInvestmentId] = useState(null);
   const { success, failure } = useContext(ToastifyContext);
   const [investments, setInvestments] = useState([]);
+  const [investmentData, setInvestmentData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [total, setTotal] = useState("");
   const fetchInvestments = async () => {
     try {
       const resp = await getInvestments(); // Fetch investments from your API
@@ -29,9 +33,40 @@ const Investments = () => {
       failure("Failed to load investments");
     }
   };
+  const fetchTotalInvestments = async () => {
+    try {
+      const resp = await getTotalInvestments(); // Fetch investments from your API
+      setTotal(resp);
+      console.log("this is total", resp);
+    } catch (e) {
+      failure("Failed to load investments");
+    }
+  };
+  const fetchInvestmentsbyCategory = async () => {
+    try {
+      const user = await getUser(); // Fetch the user data to get investment types
+      const investmentTypes = user.investmentTypes;
 
+      // Fetch all investments
+      const investments = await getInvestments();
+
+      // Aggregate investments by type
+      const investmentData = investmentTypes.map((type) => ({
+        name: type.name,
+        value: investments
+          .filter((investment) => investment.investmentType === type.name)
+          .reduce((acc, curr) => acc + curr.amount, 0),
+      }));
+
+      setInvestmentData(investmentData);
+    } catch (e) {
+      failure("Failed to load investments by category");
+    }
+  };
   useEffect(() => {
     fetchInvestments();
+    fetchTotalInvestments();
+    fetchInvestmentsbyCategory();
   }, [isModalOpen, isEditOpen]);
 
   const deleteInvestmentHandler = async (investmentId) => {
@@ -88,6 +123,31 @@ const Investments = () => {
           Add Investment
         </button>
       </div>
+      <div className="bg-secondary-color p-4 rounded-md">
+        <h3 className="text-white mb-4">Investments by Type</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={investmentData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              fill="#8884d8"
+              label={({ name }) => name}
+            >
+              {investmentData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
 
       <div className="mt-6 overflow-x-scroll rounded-lg shadow-md max-w-full vscrollbar lg:overflow-hidden">
         {/* Investments Table */}
@@ -98,6 +158,9 @@ const Investments = () => {
               <th className="p-4">Investment Type</th>
               <th className="p-4">Description</th>
               <th className="p-4">Amount Invested</th>
+              <th className="p-4">Expected ROI</th>
+              <th className="p-4">Duration (in years)</th>
+              <th className="p-4">Returns</th>
               <th className="p-4">Action</th>
             </tr>
           </thead>
@@ -111,6 +174,11 @@ const Investments = () => {
                 <td className="p-4">{investment.investmentType}</td>
                 <td className="p-4">{investment.description}</td>
                 <td className="p-4">{investment.amount}</td>
+                <td className="p-4">{investment.roi}</td>
+                <td className="p-4">{investment.duration}</td>
+                <td className="p-4">
+                  {Number(investment.expAmount).toFixed()}
+                </td>
                 <td className="p-4 flex space-x-2">
                   <button
                     onClick={() => handleEditInvestment(investment._id)}

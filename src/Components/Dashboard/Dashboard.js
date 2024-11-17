@@ -21,6 +21,7 @@ import { getGoals } from "../../api/Finances/Goals";
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
 import { formatDate } from "../../Utils/Helper";
 import { getUser } from "../../api/Auth/AuthAPI";
+import { Link } from "react-router-dom";
 const Dashboard = () => {
   const [selectedYear, setSelectedYear] = useState("2024");
   const [selectedMonth, setSelectedMonth] = useState("All");
@@ -194,7 +195,7 @@ const Dashboard = () => {
                 cy="50%"
                 outerRadius={100}
                 fill="#8884d8"
-                label
+                label={({ name }) => name}
               >
                 {categoryData.map((entry, index) => (
                   <Cell
@@ -236,7 +237,7 @@ const Dashboard = () => {
                 cy="50%"
                 outerRadius={100}
                 fill="#8884d8"
-                label
+                label={({ name }) => name}
               >
                 {investmentData.map((entry, index) => (
                   <Cell
@@ -249,75 +250,47 @@ const Dashboard = () => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        {/* Recent Expenses */}
-        <div className="bg-secondary-color p-6 rounded-lg shadow-lg space-y-4">
-          <h3 className="text-2xl font-semibold text-white mb-4">
-            Recent Expenses
-          </h3>
-          <ul className="text-white space-y-3">
-            {expenseData.slice(0, 5).map((expense, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center border-b border-gray-700 py-2"
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium">{expense.category}</span>
-                  <span className="text-sm text-gray-400">
-                    {new Date(expense.date).toLocaleDateString()}
-                  </span>
-                </div>
-                <span className="font-semibold text-xl">${expense.amount}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {/* inside this div , create a recent goals container , where there's a see all button on top right , which will redirect to /goals , make the recent goals similar to goals component right now meaning , goal name and progress bar (with the percentage of course)only . make it stylish and chic , make it good to look at  */}
+        <div className="bg-secondary-color p-6 rounded-lg shadow-lg">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-white text-xl font-semibold">Recent Goals</h3>
+            <Link to="/goals" className="text-blue-400 hover:underline text-sm">
+              See All
+            </Link>
+          </div>
+          <div className="space-y-6">
+            {goals.slice(0, 3).map((goal) => {
+              const progressPercentage =
+                (goal.currentAmount / goal.targetAmount) * 100;
 
-        {/* Investments */}
-        <div className="bg-secondary-color p-6 rounded-lg shadow-lg space-y-4">
-          <h3 className="text-2xl font-semibold text-white mb-4">
-            Investments
-          </h3>
-          <ul className="text-white space-y-3">
-            {investments.slice(0, 5).map((investment, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center border-b border-gray-700 py-2"
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium">
-                    {investment.investmentType}
-                  </span>
+              return (
+                <div
+                  key={goal.id}
+                  className="p-4 bg-primary-color rounded-lg shadow-md"
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-white text-lg font-medium">
+                      {goal.goalName}
+                    </h4>
+                    <span className="text-white text-sm font-semibold">
+                      {Math.min(progressPercentage, 100).toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="mt-4">
+                    <div className="w-full bg-gray-200 h-2 rounded-full">
+                      <div
+                        className="h-2 rounded-full bg-yellow-500"
+                        style={{
+                          width: `${Math.min(progressPercentage, 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <span className="font-semibold text-xl">
-                  ${investment.amount}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Goals */}
-        <div className="bg-secondary-color p-6 rounded-lg shadow-lg space-y-4">
-          <h3 className="text-2xl font-semibold text-white mb-4">Goals</h3>
-          <ul className="text-white space-y-3">
-            {goals.slice(0, 5).map((goal, index) => (
-              <li
-                key={index}
-                className="flex justify-between items-center border-b border-gray-700 py-2"
-              >
-                <div className="flex flex-col">
-                  <span className="font-medium">{goal.goalName}</span>
-                  <span className="text-sm text-gray-400">
-                    Due by {formatDate(goal.deadline)}
-                  </span>
-                </div>
-                <span className="font-semibold text-xl">{goal.status}</span>
-              </li>
-            ))}
-          </ul>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

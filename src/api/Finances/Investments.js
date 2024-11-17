@@ -35,6 +35,19 @@ export const getInvestments = async () => {
     throw error; // Rethrow the error for handling in the component
   }
 };
+export const getTotalInvestments = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/total-investment`, {
+      headers: {
+        "auth-token": getAuthToken(), // Include the auth token in the headers
+      },
+    });
+    return response.data; // Return the list of investments
+  } catch (error) {
+    console.error("Error fetching investments:", error);
+    throw error; // Rethrow the error for handling in the component
+  }
+};
 
 // Get a specific investment by ID
 export const getInvestmentById = async (investmentId) => {

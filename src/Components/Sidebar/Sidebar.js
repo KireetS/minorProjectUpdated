@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { MdSpaceDashboard } from "react-icons/md";
 import { TbArcheryArrow } from "react-icons/tb";
 import { BiCoinStack } from "react-icons/bi";
 import { FaDollarSign } from "react-icons/fa";
 import { FaChartLine } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
+import LoginContext from "./../../Contexts/loginContext/LoginContext";
 
 const Sidebar = () => {
   const [visible, setVisible] = useState(false);
+  const navigate = useNavigate();
+  const { setLogin } = useContext(LoginContext);
 
   useEffect(() => {
     if (localStorage.getItem("auth-token")) {
@@ -48,6 +51,17 @@ const Sidebar = () => {
           <BiCoinStack className="dashboard-icon" />
           <span className="dashboard-text">Learning</span>
         </Link>
+        <div
+          onClick={() => {
+            localStorage.removeItem("auth-token");
+            setLogin(false);
+            navigate("/");
+          }}
+          className="flex space-x-3 dashboard-entry cursor-pointer"
+        >
+          <BiCoinStack className="dashboard-icon" />
+          <span className="dashboard-text">Sign Out</span>
+        </div>
       </div>
     </aside>
   ) : null;

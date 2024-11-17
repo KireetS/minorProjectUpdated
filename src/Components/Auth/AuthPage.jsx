@@ -161,7 +161,7 @@ export default function AuthPage({ isSignIn }) {
                   <img src="/logo_2.png" alt="logo" width={180} />
                 </a>
               </div>
-              <div className="head-msg">Welcome back to ReelCraft !</div>
+              <div className="head-msg">Welcome back to MoneyMap !</div>
               <div className="sub-msg">Are you new here? </div>
               <button onClick={toggleSignIn} className="btn toggle-btn">
                 Click Here to Sign-Up

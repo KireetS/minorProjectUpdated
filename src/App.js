@@ -10,6 +10,8 @@ import Investments from "./Components/Investments/Investments";
 import SipCalculator from "./Components/sip/SipCalculator";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import LoginContext from "./Contexts/loginContext/LoginContext";
+import Learning from "./Components/Learning/Learning";
+import Insights from "./Components/Insights/Insights";
 
 export default function App() {
   const { login, setLogin } = useContext(LoginContext);
@@ -43,6 +45,8 @@ export default function App() {
               <Route path="/goals" element={<Goals />} />
               <Route path="/investments" element={<Investments />} />
               <Route path="/sip" element={<SipCalculator />} />
+              <Route path="/learning" element={<Learning />} />
+              <Route path="/suggestions" element={<Insights />} />
             </Routes>
           </>
         )}

@@ -9,6 +9,8 @@ const AddInvestment = ({ isOpen, onClose }) => {
   const [investmentDetails, setInvestmentDetails] = useState({
     amount: "",
     date: "",
+    roi: "",
+    duration: "",
     investmentType: "", // Type of investment
     description: "", // Optional description
   });
@@ -67,6 +69,30 @@ const AddInvestment = ({ isOpen, onClose }) => {
               type="number"
               name="amount" // Amount invested
               value={investmentDetails.amount}
+              onChange={handleChange}
+              className="w-full p-2 rounded bg-primary-color text-white border-none focus:ring-2 focus:ring-yellow-500"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="text-white block mb-2">Duration (In Years)</label>
+            <input
+              type="number"
+              name="duration" // Amount invested
+              value={investmentDetails.duration}
+              onChange={handleChange}
+              className="w-full p-2 rounded bg-primary-color text-white border-none focus:ring-2 focus:ring-yellow-500"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="text-white block mb-2">
+              Expected Rate of Interest
+            </label>
+            <input
+              type="number"
+              name="roi" // Amount invested
+              value={investmentDetails.roi}
               onChange={handleChange}
               className="w-full p-2 rounded bg-primary-color text-white border-none focus:ring-2 focus:ring-yellow-500"
               required

@@ -12,6 +12,15 @@ import {
 import ToastifyContext from "../../Contexts/toastifyContext/ToastifyContext";
 import { formatDate } from "../../Utils/Helper";
 import EditExpense from "./EditExpense";
+import {
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Legend,
+} from "recharts";
 const Expenses = () => {
   const [selectedYear, setSelectedYear] = useState("2024");
   const [selectedMonth, setSelectedMonth] = useState("January");
@@ -91,6 +100,26 @@ const Expenses = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const histogramData = expenses
+    .filter(
+      (expense) =>
+        selectedMonth === "All" ||
+        new Date(expense.date).toLocaleString("default", { month: "long" }) ===
+          selectedMonth
+    )
+    .reduce((acc, expense) => {
+      const dateKey =
+        selectedMonth === "All"
+          ? new Date(expense.date).toLocaleString("default", { month: "short" })
+          : new Date(expense.date).getDate();
+      const existingDate = acc.find((item) => item.name === dateKey);
+      if (existingDate) {
+        existingDate.amount += expense.amount;
+      } else {
+        acc.push({ name: dateKey, amount: expense.amount });
+      }
+      return acc;
+    }, []);
 
   const deleteExpensehere = async (expenseId) => {
     // Optimistically remove the expense from the local state
@@ -179,7 +208,6 @@ const Expenses = () => {
           </select>
         </div>
       </div>
-
       <div className="w-full flex items-center justify-end space-x-4 py-3 px-0">
         {/* <button
           onClick={() => {
@@ -197,6 +225,24 @@ const Expenses = () => {
         >
           Add Expense
         </button>
+      </div>
+      <div className="w-full flex items-center justify-start space-x-4 py-3 px-0">
+        <div className="bg-secondary-color p-4 rounded-md w-1/2">
+          <h3 className="text-white mb-4">Expenses Over Time</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={histogramData}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="amount" fill="#82ca9d" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      <div className="mt-8  text-white text-lg font-semibold">
+        Total Cost for {selectedMonth} {selectedYear}:{" "}
+        <span className="text-red-500"> ${sumExpenses()}</span>
       </div>
 
       <div className="mt-6 overflow-x-scroll rounded-lg shadow-md max-w-full vscrollbar lg:overflow-hidden">
@@ -246,10 +292,7 @@ const Expenses = () => {
           </tbody>
         </table>
       </div>
-      <div className="mt-8  text-white text-lg font-semibold">
-        Total Cost for {selectedMonth} {selectedYear}:{" "}
-        <span className="text-red-500"> ${sumExpenses()}</span>
-      </div>
+
       <AddExpense isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <AddCategoryModal
         isOpen={isCModalOpen}
