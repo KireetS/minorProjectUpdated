@@ -165,8 +165,8 @@ const Investments = () => {
       </div>
 
       <div className="w-full flex items-center justify-end space-x-4 text-white text-lg  py-3 px-0">
-        Total Amount Invested : ${total.totalAmount} <br />
-        Total Expected Returns : ${total.totalReturn}
+        Total Amount Invested : ₹{total.totalAmount} <br />
+        Total Expected Returns : ₹{total.totalReturn}
       </div>
 
       <div className="mt-6 overflow-x-scroll rounded-lg shadow-md max-w-full vscrollbar lg:overflow-hidden">

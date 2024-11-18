@@ -242,7 +242,7 @@ const Expenses = () => {
       </div>
       <div className="mt-8  text-white text-lg font-semibold">
         Total Cost for {selectedMonth} {selectedYear}:{" "}
-        <span className="text-red-500"> ${sumExpenses()}</span>
+        <span className="text-red-500"> ₹{sumExpenses()}</span>
       </div>
 
       <div className="mt-6 overflow-x-scroll rounded-lg shadow-md max-w-full vscrollbar lg:overflow-hidden">

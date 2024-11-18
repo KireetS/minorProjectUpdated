@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import {
-  PieChart,
-  Pie,
-  Cell,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 
 const SipCalculator = () => {
@@ -18,22 +19,21 @@ const SipCalculator = () => {
   const calculateSIP = () => {
     const totalMonths = investmentDuration * 12;
     let totalInvestment = oneTimeInvestment;
-    let totalReturnAmount = 0;
+    let monthlyData = [];
 
     for (let month = 1; month <= totalMonths; month++) {
       totalInvestment += monthlyInvestment;
       const returnAmount =
         totalInvestment * Math.pow(1 + expectedReturnRate / 100 / 12, month);
-      totalReturnAmount = returnAmount; // Final value after all months
+
+      monthlyData.push({
+        month,
+        investment: totalInvestment,
+        value: returnAmount,
+      });
     }
 
-    // Pie chart data
-    const chartData = [
-      { name: "Total Investment", value: totalInvestment },
-      { name: "Expected Return", value: totalReturnAmount - totalInvestment },
-    ];
-
-    setData(chartData);
+    setData(monthlyData);
   };
 
   const handleCalculate = (e) => {
@@ -51,18 +51,13 @@ const SipCalculator = () => {
         >
           <div>
             <label className="block text-sm font-medium text-white">
-              Monthly Investment Amount ($)
+              Monthly Investment Amount (₹)
             </label>
             <input
               type="number"
               className="mt-1 block w-full bg-primary-color text-white border-none rounded-md shadow-sm focus:border-none focus:ring-0 p-2"
-              value={monthlyInvestment}
+              value={monthlyInvestment || ""}
               onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace" && monthlyInvestment === 0) {
-                  setMonthlyInvestment("");
-                }
-              }}
             />
           </div>
           <div>
@@ -72,13 +67,8 @@ const SipCalculator = () => {
             <input
               type="number"
               className="mt-1 block w-full bg-primary-color text-white border-none rounded-md shadow-sm focus:border-none focus:ring-0 p-2"
-              value={investmentDuration}
+              value={investmentDuration || ""}
               onChange={(e) => setInvestmentDuration(Number(e.target.value))}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace" && investmentDuration === 0) {
-                  setInvestmentDuration("");
-                }
-              }}
             />
           </div>
           <div>
@@ -88,29 +78,19 @@ const SipCalculator = () => {
             <input
               type="number"
               className="mt-1 block w-full bg-primary-color text-white border-none rounded-md shadow-sm focus:border-none focus:ring-0 p-2"
-              value={expectedReturnRate}
+              value={expectedReturnRate || ""}
               onChange={(e) => setExpectedReturnRate(Number(e.target.value))}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace" && expectedReturnRate === 0) {
-                  setExpectedReturnRate("");
-                }
-              }}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-white">
-              One-Time Investment ($)
+              One-Time Investment (₹)
             </label>
             <input
               type="number"
               className="mt-1 block w-full bg-primary-color text-white border-none rounded-md shadow-sm focus:border-none focus:ring-0 p-2"
-              value={oneTimeInvestment}
+              value={oneTimeInvestment || ""}
               onChange={(e) => setOneTimeInvestment(Number(e.target.value))}
-              onKeyDown={(e) => {
-                if (e.key === "Backspace" && oneTimeInvestment === 0) {
-                  setOneTimeInvestment("");
-                }
-              }}
             />
           </div>
           <div className="col-span-1 md:col-span-2">
@@ -126,25 +106,57 @@ const SipCalculator = () => {
         <div className="p-4 w-full">
           {data.length > 0 && (
             <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Legend iconSize={10} iconType="circle" />
-                <Tooltip
-                  contentStyle={{ backgroundColor: "#4B5563", border: "none" }}
+              <LineChart data={data}>
+                <CartesianGrid
+                  strokeDasharray="2 2"
+                  stroke="#333"
+                  opacity={0.5}
                 />
-                <Pie
-                  data={data}
+                <XAxis
+                  dataKey="month"
+                  stroke="#e2e8f0"
+                  label={{
+                    value: "Months",
+                    position: "insideBottom",
+                    fill: "#e2e8f0",
+                    offset: -5,
+                  }}
+                />
+                <YAxis
+                  stroke="#e2e8f0"
+                  label={{
+                    value: "Amount (₹)",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "#e2e8f0",
+                    offset: -20, // Add offset to create space between label and numbers
+                  }}
+                />
+
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#4B5563",
+                    border: "none",
+                    color: "#fff",
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="investment"
+                  stroke="#facc15"
+                  name="Total Investment"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: "#facc15" }}
+                />
+                <Line
+                  type="monotone"
                   dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  label
-                >
-                  <Cell key="investment" fill="#1c64f2" />
-                  <Cell key="return" fill="#4caf50" />
-                </Pie>
-              </PieChart>
+                  stroke="#22c55e"
+                  name="Total Value"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: "#22c55e" }}
+                />
+              </LineChart>
             </ResponsiveContainer>
           )}
         </div>
